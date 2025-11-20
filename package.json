@@ -1,0 +1,56 @@
+{
+  "name": "tennistab",
+  "version": "1.0.0",
+  "description": "테니스 협회 클럽 및 회원 관리 시스템",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "prepare": "husky"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github-personal:jeonghakhur/tennistab.git"
+  },
+  "keywords": [
+    "tennis",
+    "association",
+    "club",
+    "tournament"
+  ],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@sanity/client": "^7.13.0",
+    "@sanity/image-url": "^1.2.0",
+    "@sanity/vision": "^4.16.0",
+    "bootstrap": "^5.3.8",
+    "next": "^16.0.3",
+    "next-sanity": "^11.6.8",
+    "react": "^19.2.0",
+    "react-bootstrap": "^2.10.10",
+    "react-dom": "^19.2.0",
+    "sanity": "^4.16.0",
+    "styled-components": "^6.1.19"
+  },
+  "devDependencies": {
+    "@eslint/eslintrc": "^3.3.1",
+    "@sanity/types": "^4.16.0",
+    "@types/node": "^24.10.1",
+    "@types/react": "^19.2.6",
+    "@types/react-dom": "^19.2.3",
+    "eslint": "^9.39.1",
+    "eslint-config-next": "^16.0.3",
+    "husky": "^9.1.7",
+    "lint-staged": "^16.2.7",
+    "prettier": "^3.6.2",
+    "typescript": "^5.9.3"
+  },
+  "lint-staged": {
+    "*.{js,ts,tsx,jsx}": [
+      "prettier --write"
+    ]
+  }
+}
