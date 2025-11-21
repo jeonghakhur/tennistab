@@ -3,6 +3,7 @@ import { Inter } from 'next/font/google';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './globals.css';
 import BootstrapClient from '@/components/BootstrapClient';
+import AppNavbar from '@/components/Navbar';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -15,6 +16,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="ko">
       <body className={inter.className}>
+        <AppNavbar />
         {children}
         <BootstrapClient />
       </body>
