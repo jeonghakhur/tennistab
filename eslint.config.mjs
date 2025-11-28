@@ -15,8 +15,13 @@ const eslintConfig = [
   },
   ...compat.extends('next/core-web-vitals', 'next/typescript'),
   {
+    plugins: [
+      'import',
+    ],
     rules: {
       '@typescript-eslint/no-explicit-any': 'off',
+      '@typescript-eslint/no-unused-vars': 'error',
+      'no-unused-vars': 'error', // TypeScript 버전을 사용하므로 기본 규칙 비활성화
     },
   },
 ];

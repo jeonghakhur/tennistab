@@ -3,26 +3,26 @@ import clsx from 'clsx';
 import { DynamicRefForwardingComponent } from '@restart/ui/types';
 import { useBootstrapPrefix } from './ThemeProvider';
 
-export interface NavbarTextProps extends React.HTMLAttributes<HTMLElement> {
+export interface NavItemProps extends React.HTMLAttributes<HTMLElement> {
   /**
    * Element used to render the component.
    */
   as?: React.ElementType | undefined;
 
   /**
-   * @default 'navbar-text'
+   * @default 'nav-item'
    */
   bsPrefix?: string | undefined;
 }
 
-const NavbarText: DynamicRefForwardingComponent<'span', NavbarTextProps> = React.forwardRef<
+const NavItem: DynamicRefForwardingComponent<'div', NavItemProps> = React.forwardRef<
   HTMLElement,
-  NavbarTextProps
->(({ className, bsPrefix, as: Component = 'span', ...props }, ref) => {
-  bsPrefix = useBootstrapPrefix(bsPrefix, 'navbar-text');
+  NavItemProps
+>(({ className, bsPrefix, as: Component = 'div', ...props }, ref) => {
+  bsPrefix = useBootstrapPrefix(bsPrefix, 'nav-item');
   return <Component ref={ref} className={clsx(className, bsPrefix)} {...props} />;
 });
 
-NavbarText.displayName = 'NavbarText';
+NavItem.displayName = 'NavItem';
 
-export default NavbarText;
+export default NavItem;

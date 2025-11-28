@@ -1,0 +1,22 @@
+{
+  "extends": [
+    "stylelint-config-standard"
+  ],
+  "overrides": [
+    {
+      "files": ["*.css", "*.scss"],
+      "rules": {
+        "value-keyword-case": [
+          "lower",
+          {
+            "ignoreProperties": [
+              "font-family",
+              "font",
+              "/^\\$/"
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

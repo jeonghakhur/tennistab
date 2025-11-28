@@ -1,7 +1,7 @@
 import clsx from 'clsx';
 import * as React from 'react';
 import type { DynamicRefForwardingComponent } from '@restart/ui/types';
-import { useBootstrapPrefix } from './ThemeProvider.js';
+import { useBootstrapPrefix } from './ThemeProvider';
 
 export interface NavbarBrandProps extends React.HTMLAttributes<HTMLElement> {
   /**
@@ -20,18 +20,16 @@ export interface NavbarBrandProps extends React.HTMLAttributes<HTMLElement> {
   href?: string | undefined;
 }
 
-const NavbarBrand: DynamicRefForwardingComponent<'a', NavbarBrandProps> =
-  React.forwardRef<HTMLElement, NavbarBrandProps>(
-    ({ bsPrefix, className, as, ...props }, ref) => {
-      bsPrefix = useBootstrapPrefix(bsPrefix, 'navbar-brand');
+const NavbarBrand: DynamicRefForwardingComponent<'a', NavbarBrandProps> = React.forwardRef<
+  HTMLElement,
+  NavbarBrandProps
+>(({ bsPrefix, className, as, ...props }, ref) => {
+  bsPrefix = useBootstrapPrefix(bsPrefix, 'navbar-brand');
 
-      const Component = as || (props.href ? 'a' : 'span');
+  const Component = as || (props.href ? 'a' : 'span');
 
-      return (
-        <Component {...props} ref={ref} className={clsx(className, bsPrefix)} />
-      );
-    },
-  );
+  return <Component {...props} ref={ref} className={clsx(className, bsPrefix)} />;
+});
 
 NavbarBrand.displayName = 'NavbarBrand';
 

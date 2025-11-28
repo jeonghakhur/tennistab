@@ -1,8 +1,8 @@
 import * as React from 'react';
 import { useContext } from 'react';
-import Collapse, { type CollapseProps } from './Collapse.js';
-import { useBootstrapPrefix } from './ThemeProvider.js';
-import NavbarContext from './NavbarContext.js';
+import Collapse, { type CollapseProps } from 'react-bootstrap/Collapse';
+import { useBootstrapPrefix } from './ThemeProvider';
+import NavbarContext from './NavbarContext';
 
 export interface NavbarCollapseProps
   extends Omit<CollapseProps, 'children'>,

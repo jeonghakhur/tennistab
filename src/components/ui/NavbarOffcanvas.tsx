@@ -2,8 +2,8 @@ import * as React from 'react';
 import { useContext } from 'react';
 import useEventCallback from '@restart/hooks/useEventCallback';
 import type { ModalHandle } from '@restart/ui/Modal';
-import Offcanvas, { type OffcanvasProps } from './Offcanvas.js';
-import NavbarContext from './NavbarContext.js';
+import Offcanvas, { type OffcanvasProps } from 'react-bootstrap/Offcanvas';
+import NavbarContext from './NavbarContext';
 
 export type NavbarOffcanvasProps = Omit<OffcanvasProps, 'show'>;
 
@@ -16,14 +16,7 @@ const NavbarOffcanvas = React.forwardRef<ModalHandle, NavbarOffcanvasProps>(
       onHide?.();
     });
 
-    return (
-      <Offcanvas
-        ref={ref}
-        show={!!context?.expanded}
-        {...props}
-        onHide={handleHide}
-      />
-    );
+    return <Offcanvas ref={ref} show={!!context?.expanded} {...props} onHide={handleHide} />;
   },
 );
 

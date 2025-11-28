@@ -1,0 +1,12 @@
+{
+  "cSpell.words": ["kakao"],
+  "editor.codeActionsOnSave": {
+    "source.fixAll.stylelint": "explicit",
+    "source.fixAll.eslint": "explicit"
+  },
+  "stylelint.validate": ["css", "scss"],
+  "eslint.enable": true,
+  "eslint.validate": ["javascript", "javascriptreact", "typescript", "typescriptreact"],
+  "typescript.preferences.includePackageJsonAutoImports": "on",
+  "typescript.tsdk": "node_modules/typescript/lib"
+}
