@@ -67,7 +67,7 @@ const Fade = React.forwardRef<Transition<any>, FadeProps>(
     };
 
     const handleEnter = useCallback(
-      (node, isAppearing) => {
+      (node: HTMLElement, isAppearing: boolean) => {
         triggerBrowserReflow(node);
         onEnter?.(node, isAppearing);
       },
@@ -89,7 +89,7 @@ const Fade = React.forwardRef<Transition<any>, FadeProps>(
               'fade',
               className,
               (children.props as any).className,
-              fadeStyles[status],
+              fadeStyles[status as keyof typeof fadeStyles] as string,
               transitionClasses[status],
             ),
           })

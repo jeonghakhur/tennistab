@@ -41,7 +41,7 @@ function forEach<P = any>(
  */
 function hasChildOfType<P = any>(
   children: React.ReactNode,
-  type: string | ReactXElementConstructor<P>,
+  type: string | React.JSXElementConstructor<P>,
 ): boolean {
   return React.Children.toArray(children).some(
     (child) => React.isValidElement(child) && child.type === type,
