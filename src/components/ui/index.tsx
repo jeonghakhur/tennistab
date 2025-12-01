@@ -23,3 +23,6 @@ export { default as Col } from './Col';
 
 export { default as Modal } from './Modal';
 export type { ModalProps } from './Modal';
+
+export { default as Table } from './Table';
+export type { TableProps } from './Table';

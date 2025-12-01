@@ -1,72 +1,94 @@
 'use client';
 
 import { Divider, MainContainer, Text, Flex } from '@/components';
-import { Button, Form, Modal } from '@/components/ui';
+import { Button, Form, Modal, Table } from '@/components/ui';
 import NavLink from '@/components/ui/NavLink';
 import { IoIosArrowForward } from 'react-icons/io';
 import FloatingLabel from '@/components/ui/FloatingLabel';
 import { useState } from 'react';
 
 export default function Join() {
-  const [show, setShow] = useState(true);
-  const handleClose = () => setShow(false);
-  const handleShow = () => setShow(true);
+  // 모달 상태 관리
+  const [show, setShow] = useState({
+    terms: false,
+    privacy: false,
+  });
+
+  // 체크박스 상태 관리
+  const [consents, setConsents] = useState({
+    termsOfUse: false,
+    personalInfoConsent: false,
+  });
+
+  // 전체 동의 상태 계산 (모든 개별 체크박스가 체크되어 있는지 확인)
+  const isAllChecked = Object.values(consents).every((checked) => checked);
+
+  // 전체 동의 핸들러
+  const handleAllConsentChange = (checked: boolean) => {
+    setConsents({
+      termsOfUse: checked,
+      personalInfoConsent: checked,
+    });
+  };
+
+  // 개별 체크박스 변경 핸들러
+  const handleConsentChange = (key: keyof typeof consents, checked: boolean) => {
+    setConsents((prev) => ({ ...prev, [key]: checked }));
+  };
+
+  // 특정 모달 열기
+  const handleShow = (key: keyof typeof show) => () => {
+    setShow((prev) => ({ ...prev, [key]: true }));
+  };
+
+  // 특정 모달 닫기
+  const handleClose = (key: keyof typeof show) => () => {
+    setShow((prev) => ({ ...prev, [key]: false }));
+  };
 
   return (
     <MainContainer title="회원가입">
       <Form.Group controlId="fullConsent">
-        <Form.Check type="checkbox" label="전체동의" style={{ fontSize: '18px' }} />
+        <Form.Check
+          type="checkbox"
+          label="전체동의"
+          style={{ fontSize: '18px' }}
+          checked={isAllChecked}
+          onChange={(e) => handleAllConsentChange(e.target.checked)}
+        />
       </Form.Group>
       <Divider size="sm" direction="horizontal" color="secondary" className="opacity-50" />
       <Flex gap="3" direction="column">
         <Form.Check type="checkbox" id="termsOfUse" className="d-flex align-items-center">
-          <Form.Check.Input type="checkbox" />
+          <Form.Check.Input
+            type="checkbox"
+            checked={consents.termsOfUse}
+            onChange={(e) => handleConsentChange('termsOfUse', e.target.checked)}
+          />
           <Form.Label className="mb-0">
             <Text color="primary" as="span" className="mx-1">
               (필수)
             </Text>
             이용약관
           </Form.Label>
-          <NavLink as="button" type="button" className="ml-auto" onClick={handleShow}>
+          <NavLink as="button" type="button" className="ml-auto" onClick={handleShow('terms')}>
             상세보기
             <IoIosArrowForward />
           </NavLink>
         </Form.Check>
         <Form.Check type="checkbox" id="personalInfoConsent" className="d-flex align-items-center">
-          <Form.Check.Input type="checkbox" />
+          <Form.Check.Input
+            type="checkbox"
+            checked={consents.personalInfoConsent}
+            onChange={(e) => handleConsentChange('personalInfoConsent', e.target.checked)}
+          />
           <Form.Label className="mb-0">
             <Text color="primary" as="span" className="mx-1">
               (필수)
             </Text>
             개인정보 수집 및 이용
           </Form.Label>
-          <NavLink as="button" type="button" className="ml-auto">
-            상세보기
-            <IoIosArrowForward />
-          </NavLink>
-        </Form.Check>
-        <Form.Check type="checkbox" id="checkbox-3" className="d-flex align-items-center">
-          <Form.Check.Input type="checkbox" />
-          <Form.Label className="mb-0">
-            <Text as="span" className="mx-1">
-              (선택)
-            </Text>
-            개인정보 수집 및 이용
-          </Form.Label>
-          <NavLink as="button" type="button" className="ml-auto">
-            상세보기
-            <IoIosArrowForward />
-          </NavLink>
-        </Form.Check>
-        <Form.Check type="checkbox" id="checkbox-4" className="d-flex align-items-center">
-          <Form.Check.Input type="checkbox" />
-          <Form.Label className="mb-0">
-            <Text as="span" className="mx-1">
-              (선택)
-            </Text>
-            마케팅 및 광고 활용 동의
-          </Form.Label>
-          <NavLink as="button" type="button" className="ml-auto">
+          <NavLink as="button" type="button" className="ml-auto" onClick={handleShow('privacy')}>
             상세보기
             <IoIosArrowForward />
           </NavLink>
@@ -95,7 +117,7 @@ export default function Join() {
             inputMode="numeric"
           />
         </FloatingLabel>
-        <FloatingLabel label="성명을 입력해주세요." controlId="dateOfBirth">
+        <FloatingLabel label="성명을 입력해주세요." controlId="name">
           <Form.Control type="text" placeholder="성명을 입력해주세요" />
         </FloatingLabel>
         <FloatingLabel label="생년월일을 입력해주세요." controlId="dateOfBirth">
@@ -106,12 +128,13 @@ export default function Join() {
         </Button>
       </Flex>
 
-      <Modal show={show} onHide={handleClose}>
+      {/* 이용약관 모달 */}
+      <Modal show={show.terms} onHide={handleClose('terms')} fullscreen={true}>
         <Modal.Header closeButton>
-          <Modal.Title>약관상세</Modal.Title>
+          <Modal.Title as="h3">약관상세</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <Text as="h4" size="lg">
+          <Text as="h4" size="lg" className="mb-4">
             제1장 총칙
           </Text>
           <div>
@@ -122,7 +145,7 @@ export default function Join() {
               간의 권리, 의무 및 책임 사항을 규정함을 목적으로 합니다.
             </p>
           </div>
-
+          <Divider size="sm" direction="horizontal" color="secondary" className="opacity-50 my-4" />
           <div>
             <Text as="h5">제2조 (용어의 정의)</Text>
             <ol>
@@ -146,7 +169,7 @@ export default function Join() {
               </li>
             </ol>
           </div>
-
+          <Divider size="sm" direction="horizontal" color="secondary" className="opacity-50 my-4" />
           <div>
             <Text as="h5">제3조 (약관의 명시와 개정)</Text>
             <ol>
@@ -170,9 +193,11 @@ export default function Join() {
               </li>
             </ol>
           </div>
-
+          <Divider size="sm" direction="horizontal" color="secondary" className="opacity-50 my-4" />
           <div>
-            <Text as="h4">제2장 서비스 이용 계약 및 해지</Text>
+            <Text as="h4" className="mb-4">
+              제2장 서비스 이용 계약 및 해지
+            </Text>
             <Text as="h5">제4조 (이용계약의 성립)</Text>
             <ol>
               <li>
@@ -192,7 +217,7 @@ export default function Join() {
               </li>
             </ol>
           </div>
-
+          <Divider size="sm" direction="horizontal" color="secondary" className="opacity-50 my-4" />
           <div>
             <Text as="h5">제5조 (회원 탈퇴 및 자격 상실)</Text>
             <ol>
@@ -220,9 +245,11 @@ export default function Join() {
               </li>
             </ol>
           </div>
-
+          <Divider size="sm" direction="horizontal" color="secondary" className="opacity-50 my-4" />
           <div>
-            <Text as="h4">제3장 서비스 이용 및 제한</Text>
+            <Text as="h4" className="mb-4">
+              제3장 서비스 이용 및 제한
+            </Text>
             <Text as="h5">제6조 (서비스의 내용)</Text>
             <p>"회사"가 "회원"에게 제공하는 "서비스"의 내용은 다음 각 호와 같습니다.</p>
             <ol>
@@ -236,7 +263,7 @@ export default function Join() {
               </li>
             </ol>
           </div>
-
+          <Divider size="sm" direction="horizontal" color="secondary" className="opacity-50 my-4" />
           <div>
             <Text as="h5">제7조 (대회 참가 신청 및 환불)</Text>
             <ol>
@@ -255,7 +282,7 @@ export default function Join() {
               </li>
             </ol>
           </div>
-
+          <Divider size="sm" direction="horizontal" color="secondary" className="opacity-50 my-4" />
           <div>
             <Text as="h5">제8조 (게시물의 관리)</Text>
             <ol>
@@ -278,7 +305,7 @@ export default function Join() {
               </li>
             </ol>
           </div>
-
+          <Divider size="sm" direction="horizontal" color="secondary" className="opacity-50 my-4" />
           <div>
             <Text as="h5">제9조 (저작권의 귀속 및 이용)</Text>
             <ol>
@@ -300,7 +327,7 @@ export default function Join() {
               </li>
             </ol>
           </div>
-
+          <Divider size="sm" direction="horizontal" color="secondary" className="opacity-50 my-4" />
           <div>
             <Text as="h4">제4장 의무 및 책임</Text>
             <Text as="h5">제10조 (회사의 의무)</Text>
@@ -315,7 +342,7 @@ export default function Join() {
               </li>
             </ol>
           </div>
-
+          <Divider size="sm" direction="horizontal" color="secondary" className="opacity-50 my-4" />
           <div>
             <Text as="h5">제11조 (회원의 의무)</Text>
             <ol>
@@ -339,9 +366,11 @@ export default function Join() {
               </li>
             </ol>
           </div>
-
+          <Divider size="sm" direction="horizontal" color="secondary" className="opacity-50 my-4" />
           <div>
-            <Text as="h4">제5장 기타</Text>
+            <Text as="h4" className="mb-4">
+              제5장 기타
+            </Text>
             <Text as="h5">제12조 (준거법 및 재판 관할)</Text>
             <ol>
               <li>
@@ -354,81 +383,97 @@ export default function Join() {
               </li>
             </ol>
           </div>
-
+          <Divider size="sm" direction="horizontal" color="secondary" className="opacity-50 my-4" />
           <div>
             <Text>부칙 본 약관은 [서비스 시작일/적용일]부터 적용됩니다.</Text>
           </div>
-          {/* 개인정보 수집 및 이용 동의 */}
-          <div>
-            <h1>[서비스명] 개인정보 수집 및 이용 동의</h1>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="primary" size="lg" className="w-100" onClick={handleClose('terms')}>
+            확인
+          </Button>
+        </Modal.Footer>
+      </Modal>
 
+      {/* 개인정보 수집 및 이용 동의 모달 */}
+      <Modal show={show.privacy} onHide={handleClose('privacy')} fullscreen={true}>
+        <Modal.Header closeButton>
+          <Modal.Title as="h3">개인정보 수집 및 이용</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <div>
             <p>
-              [회사명/운영자명] (이하 "회사")은 「개인정보 보호법」 등 관련 법령에 따라 정보주체의
+              [<b>테니스탭</b>] (이하 "회사")은 「개인정보 보호법」 등 관련 법령에 따라 정보주체의
               개인정보를 보호하고 이와 관련한 고충을 신속하고 원활하게 처리할 수 있도록 다음과 같이
               개인정보 수집 및 이용 동의에 관한 사항을 공지합니다.
             </p>
-
+            <Divider
+              size="sm"
+              direction="horizontal"
+              color="secondary"
+              className="opacity-50 my-4"
+            />
             <section>
-              <h2>1. 개인정보 수집 및 이용 목적</h2>
+              <Text as="h5">1. 개인정보 수집 및 이용 목적</Text>
               <p>
                 "회사"는 다음의 목적을 위하여 개인정보를 수집 및 이용합니다. 수집된 개인정보는
                 다음의 목적 이외의 용도로는 이용되지 않으며, 이용 목적이 변경될 시에는 사전 동의를
                 받습니다.
               </p>
 
-              <div>
-                <table>
-                  <thead>
-                    <tr>
-                      <th>구분</th>
-                      <th>수집 항목</th>
-                      <th>수집 및 이용 목적</th>
-                      <th>보유 및 이용 기간</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <td>회원 가입 및 관리</td>
-                      <td>
-                        이름(닉네임), 이메일 주소, 비밀번호, 휴대폰 번호, 생년월일, 성별, 테니스
-                        구력(선택)
-                      </td>
-                      <td>서비스 이용에 따른 본인 식별/인증, 회원 관리, 부정 이용 방지</td>
-                      <td>
-                        회원 탈퇴 시까지 (단, 관계 법령에 따라 필요한 경우 해당 기간까지 보존)
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>대회 참가 신청</td>
-                      <td>
-                        이름, 휴대폰 번호, 소속 클럽명, 참가 등급 정보, 참가비 결제 정보(결제 수단,
-                        금액)
-                      </td>
-                      <td>
-                        대회 참가 자격 확인, 대진표 생성 및 안내, 참가비 결제 및 환불 처리, 경기
-                        결과 등록
-                      </td>
-                      <td>대회 종료 후 1년 (단, 정산 및 기록 보존을 위해)</td>
-                    </tr>
-                    <tr>
-                      <td>커뮤니티 및 소통</td>
-                      <td>닉네임, 프로필 사진(선택), 게시물(포스트), 댓글, '좋아요' 기록</td>
-                      <td>커뮤니티 서비스 이용(포스트, 댓글 작성), 서비스 내 소통 기록 관리</td>
-                      <td>회원 탈퇴 시까지</td>
-                    </tr>
-                    <tr>
-                      <td>서비스 제공 및 개선</td>
-                      <td>서비스 이용 기록(접속 로그, 쿠키, 접속 IP 정보), 기기 정보</td>
-                      <td>서비스의 안정적인 제공 및 품질 개선, 통계 분석</td>
-                      <td>관계 법령에 따라 일정 기간 보존</td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
+              <Table striped bordered>
+                <thead>
+                  <tr>
+                    <th>구분</th>
+                    <th>수집 항목</th>
+                    <th>수집 및 이용 목적</th>
+                    <th>보유 및 이용 기간</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>회원 가입 및 관리</td>
+                    <td>
+                      이름(닉네임), 이메일 주소, 휴대폰 번호, 생년월일, 성별, 테니스 구력(선택)
+                    </td>
+                    <td>서비스 이용에 따른 본인 식별/인증, 회원 관리, 부정 이용 방지</td>
+                    <td>회원 탈퇴 시까지 (단, 관계 법령에 따라 필요한 경우 해당 기간까지 보존)</td>
+                  </tr>
+                  <tr>
+                    <td>대회 참가 신청</td>
+                    <td>
+                      이름, 휴대폰 번호, 소속 클럽명, 참가 등급 정보, 참가비 결제 정보(결제 수단,
+                      금액)
+                    </td>
+                    <td>
+                      대회 참가 자격 확인, 대진표 생성 및 안내, 참가비 결제 및 환불 처리, 경기 결과
+                      등록
+                    </td>
+                    <td>대회 종료 후 1년 (단, 정산 및 기록 보존을 위해)</td>
+                  </tr>
+                  <tr>
+                    <td>커뮤니티 및 소통</td>
+                    <td>닉네임, 프로필 사진(선택), 게시물(포스트), 댓글, '좋아요' 기록</td>
+                    <td>커뮤니티 서비스 이용(포스트, 댓글 작성), 서비스 내 소통 기록 관리</td>
+                    <td>회원 탈퇴 시까지</td>
+                  </tr>
+                  <tr>
+                    <td>서비스 제공 및 개선</td>
+                    <td>서비스 이용 기록(접속 로그, 쿠키, 접속 IP 정보), 기기 정보</td>
+                    <td>서비스의 안정적인 제공 및 품질 개선, 통계 분석</td>
+                    <td>관계 법령에 따라 일정 기간 보존</td>
+                  </tr>
+                </tbody>
+              </Table>
             </section>
-
+            <Divider
+              size="sm"
+              direction="horizontal"
+              color="secondary"
+              className="opacity-50 my-4"
+            />
             <section>
-              <h2>2. 개인정보의 수집 방법</h2>
+              <Text as="h5">2. 개인정보의 수집 방법</Text>
               <p>"회사"는 다음과 같은 방법으로 개인정보를 수집합니다.</p>
               <ul>
                 <li>
@@ -445,9 +490,14 @@ export default function Join() {
                 </li>
               </ul>
             </section>
-
+            <Divider
+              size="sm"
+              direction="horizontal"
+              color="secondary"
+              className="opacity-50 my-4"
+            />
             <section>
-              <h2>3. 개인정보의 제3자 제공에 관한 사항</h2>
+              <Text as="h5">3. 개인정보의 제3자 제공에 관한 사항</Text>
               <p>
                 "회사"는 원칙적으로 이용자의 개인정보를 제1조에서 명시한 목적 범위 내에서만
                 처리하며, 이용자의 사전 동의 없이 본래의 범위를 초과하여 처리하거나 제3자에게
@@ -466,42 +516,50 @@ export default function Join() {
                 </li>
               </ul>
             </section>
-
+            <Divider
+              size="sm"
+              direction="horizontal"
+              color="secondary"
+              className="opacity-50 my-4"
+            />
             <section>
-              <h2>4. 개인정보 처리 위탁에 관한 사항</h2>
+              <Text as="h5">4. 개인정보 처리 위탁에 관한 사항</Text>
               <p>
                 "회사"는 원활한 개인정보 업무 처리를 위하여 다음과 같이 개인정보 처리 업무를
                 위탁하고 있으며, 관계 법령에 따라 위탁 계약 시 개인정보가 안전하게 관리되도록 필요한
                 사항을 규정하고 있습니다.
               </p>
-              <div>
-                <table>
-                  <thead>
-                    <tr>
-                      <th>수탁자 (위탁받는 자)</th>
-                      <th>위탁하는 업무 내용</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <td>PG사 (결제 대행사)</td>
-                      <td>대회 참가비 결제 처리 및 정산</td>
-                    </tr>
-                    <tr>
-                      <td>클라우드 서비스 제공업체 (AWS, Google Cloud 등)</td>
-                      <td>서비스 운영 및 시스템 관리, 데이터 보관</td>
-                    </tr>
-                    <tr>
-                      <td>문자/이메일 발송 대행업체</td>
-                      <td>대회 관련 공지 및 안내 사항 발송</td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
+              <Table striped bordered>
+                <thead>
+                  <tr>
+                    <th>수탁자 (위탁받는 자)</th>
+                    <th>위탁하는 업무 내용</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>PG사 (결제 대행사)</td>
+                    <td>대회 참가비 결제 처리 및 정산</td>
+                  </tr>
+                  <tr>
+                    <td>클라우드 서비스 제공업체 (AWS, Google Cloud 등)</td>
+                    <td>서비스 운영 및 시스템 관리, 데이터 보관</td>
+                  </tr>
+                  <tr>
+                    <td>문자/이메일 발송 대행업체</td>
+                    <td>대회 관련 공지 및 안내 사항 발송</td>
+                  </tr>
+                </tbody>
+              </Table>
             </section>
-
+            <Divider
+              size="sm"
+              direction="horizontal"
+              color="secondary"
+              className="opacity-50 my-4"
+            />
             <section>
-              <h2>5. 정보주체와 법정대리인의 권리·의무 및 그 행사 방법</h2>
+              <Text as="h5">5. 정보주체와 법정대리인의 권리·의무 및 그 행사 방법</Text>
               <ol>
                 <li>
                   정보주체(만 14세 미만인 경우 법정대리인 포함)는 언제든지 등록되어 있는 자신의
@@ -520,49 +578,42 @@ export default function Join() {
               </ol>
             </section>
 
-            <footer>
-              <h3>개인정보보호 책임자</h3>
-              <div>
-                <table>
-                  <thead>
-                    <tr>
-                      <th>구분</th>
-                      <th>연락처</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <td>성명/직책</td>
-                      <td>[담당자 이름] / [직책]</td>
-                    </tr>
-                    <tr>
-                      <td>전화번호</td>
-                      <td>[전화번호]</td>
-                    </tr>
-                    <tr>
-                      <td>이메일</td>
-                      <td>[이메일 주소]</td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-
-              <h3>고지 의무</h3>
+            <section>
+              <Text as="h5">개인정보보호 책임자</Text>
+              <Table striped bordered>
+                <thead>
+                  <tr>
+                    <th>구분</th>
+                    <th>연락처</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>성명/직책</td>
+                    <td>[담당자 이름] / [직책]</td>
+                  </tr>
+                  <tr>
+                    <td>전화번호</td>
+                    <td>[전화번호]</td>
+                  </tr>
+                  <tr>
+                    <td>이메일</td>
+                    <td>[이메일 주소]</td>
+                  </tr>
+                </tbody>
+              </Table>
+              <Text as="h5">고지 의무</Text>
               <p>
                 본 개인정보 처리방침의 내용 추가, 삭제 및 수정이 있을 경우 개정 최소 7일 전에
                 '공지사항'을 통해 고지할 것입니다.
               </p>
-
               <div>시행일자: [서비스 시작일/적용일]</div>
-            </footer>
+            </section>
           </div>
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="secondary" onClick={handleClose}>
-            Close
-          </Button>
-          <Button variant="primary" onClick={handleClose}>
-            Save Changes
+          <Button variant="primary" size="lg" className="w-100" onClick={handleClose('privacy')}>
+            확인
           </Button>
         </Modal.Footer>
       </Modal>
